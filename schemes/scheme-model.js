@@ -34,16 +34,19 @@ function findSteps(id) {
     .select(
       'steps.id',
       'schemes.scheme_name',
-      'steps.scheme_id',
       'steps.step_number',
       'steps.instructions',
-    );
+    )
+    .orderBy('steps.step_number');
 }
 
 function add(schemeData) {
   return db('schemes')
     .insert(schemeData)
-    .then(scheme => console.log(scheme))
+    .then(newScheme => {
+      console.log('Add scheme: ', Number(newScheme));
+      return findById(Number(newScheme));
+    })
     .catch(err => console.log('Add helper error', err));
 }
 
@@ -58,7 +61,10 @@ function update(changes, id) {
   return db('schemes')
     .where('id', Number(id))
     .update(changes)
-    .then(updateScheme => console.log(updateScheme))
+    .then(updateScheme => {
+      console.log('scheme updated: ', updateScheme);
+      return findById(Number(id));
+    })
     .catch(err => console.log('Update scheme err: ', err));
 }
 
